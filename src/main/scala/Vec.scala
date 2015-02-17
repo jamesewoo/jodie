@@ -1,7 +1,7 @@
 /**
  * An n-dimensional vector.
  */
-class Vec(val elems: List[Double]) {
+class Vec(val elems: Seq[Double]) {
 
   /**
    * Two vectors are equal, if their elements are pairwise equal.
@@ -14,7 +14,7 @@ class Vec(val elems: List[Double]) {
   }
 
   /**
-   * Computes the hash code of the underlying list of elements.
+   * Computes the hash code of the underlying sequence of elements.
    * @return
    */
   override def hashCode = elems.hashCode()
@@ -23,7 +23,7 @@ class Vec(val elems: List[Double]) {
    * Computes the length, or magnitude, of this vector.
    * @return
    */
-  def length(): Double = {
+  def length: Double = {
     Math.sqrt(elems.map(x => x * x).sum)
   }
 
@@ -66,10 +66,10 @@ class Vec(val elems: List[Double]) {
    * @return
    */
   def dotProd(that: Vec): Double = {
-    val list =
+    val seq =
       for ((x, y) <- elems zip that.elems)
       yield x * y
-    list.sum
+    seq.sum
   }
 
   /**
@@ -77,11 +77,11 @@ class Vec(val elems: List[Double]) {
    * @param p first vector
    * @param q second vector
    * @param f function to combine pairwise elements
-   * @return the list of pairwise elements
+   * @return the sequence of combined pairwise elements
    */
   private def pairwise(p: Vec,
                        q: Vec,
-                       f: (Double, Double) => Double): List[Double] = {
+                       f: (Double, Double) => Double): Seq[Double] = {
     for ((x, y) <- p.elems zip q.elems)
     yield f(x, y)
   }

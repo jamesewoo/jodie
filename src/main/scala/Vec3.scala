@@ -1,7 +1,7 @@
 /**
  * A three-dimensional vector.
  */
-class Vec3(val x: Double, val y: Double, val z: Double) extends Vec(List(x, y, z)) {
+class Vec3(val x: Double, val y: Double, val z: Double) extends Vec(Seq(x, y, z)) {
 
   /**
    * Computes the cross product with another vector.

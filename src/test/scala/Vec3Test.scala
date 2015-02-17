@@ -37,6 +37,6 @@ class Vec3Test extends FlatSpec with Matchers {
 
   it should "have the correct length" in {
     val p = new Vec3(1, 2, 3)
-    p length() should be(Math.sqrt(14))
+    p.length should be(Math.sqrt(14))
   }
 }
