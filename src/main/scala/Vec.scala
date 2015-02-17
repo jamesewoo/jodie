@@ -9,7 +9,7 @@ class Vec[T](val elems: Seq[T]) {
    * @return
    */
   override def equals(o: Any) = o match {
-    case that: Vec[T] => this.elems == that.elems
+    case v: Vec[T] => this.elems == v.elems
     case _ => false
   }
 
@@ -34,23 +34,23 @@ class Vec[T](val elems: Seq[T]) {
 
   /**
    * Adds this vector to another vector.
-   * @param that other vector
+   * @param v the other vector
    * @return
    */
-  def +(that: Vec[T])(implicit n: Numeric[T]): Vec[T] = {
+  def +(v: Vec[T])(implicit n: Numeric[T]): Vec[T] = {
     new Vec(
-      pairwise(this, that, (x, y) => n.plus(x, y))
+      pairwise(v, (x, y) => n.plus(x, y))
     )
   }
 
   /**
    * Subtracts a vector from this one.
-   * @param that other vector
+   * @param v the other vector
    * @return
    */
-  def -(that: Vec[T])(implicit n: Numeric[T]): Vec[T] = {
+  def -(v: Vec[T])(implicit n: Numeric[T]): Vec[T] = {
     new Vec(
-      pairwise(this, that, (x, y) => n.minus(x, y))
+      pairwise(v, (x, y) => n.minus(x, y))
     )
   }
 
@@ -66,28 +66,24 @@ class Vec[T](val elems: Seq[T]) {
   }
 
   /**
-   * Computes the dot product with another vector.
-   * @param that other vector
+   * Computes the dot product of this vector with another vector.
+   * @param v the other vector
    * @return
    */
-  def dotProd(that: Vec[T])(implicit n: Numeric[T]): T = {
-    val seq =
-      for ((x, y) <- elems zip that.elems)
-      yield n.times(x, y)
-    seq.sum
+  def dotProd(v: Vec[T])(implicit n: Numeric[T]): T = {
+    pairwise(v, (x, y) => n.times(x, y))
+      .sum
   }
 
   /**
-   * Combines two vectors using a pairwise operation.
-   * @param p first vector
-   * @param q second vector
+   * Combines this vector with another one using a pairwise operation.
+   * @param v the other vector
    * @param f function to combine pairwise elements
    * @return the sequence of combined pairwise elements
    */
-  private def pairwise(p: Vec[T],
-                       q: Vec[T],
+  private def pairwise(v: Vec[T],
                        f: (T, T) => T): Seq[T] = {
-    for ((x, y) <- p.elems zip q.elems)
+    for ((x, y) <- this.elems zip v.elems)
     yield f(x, y)
   }
 }
