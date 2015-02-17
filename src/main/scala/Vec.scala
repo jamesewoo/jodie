@@ -1,7 +1,7 @@
 /**
  * An n-dimensional vector.
  */
-class Vec(val elems: Seq[Double]) {
+class Vec[T](val elems: Seq[T]) {
 
   /**
    * Two vectors are equal, if their elements are pairwise equal.
@@ -9,7 +9,7 @@ class Vec(val elems: Seq[Double]) {
    * @return
    */
   override def equals(o: Any) = o match {
-    case that: Vec => this.elems == that.elems
+    case that: Vec[T] => this.elems == that.elems
     case _ => false
   }
 
@@ -23,8 +23,13 @@ class Vec(val elems: Seq[Double]) {
    * Computes the length, or magnitude, of this vector.
    * @return
    */
-  def length: Double = {
-    Math.sqrt(elems.map(x => x * x).sum)
+  def length(implicit n: Numeric[T]): Double = {
+    import n._
+    math.sqrt(
+      elems
+        .map(x => x * x)
+        .sum
+        .toDouble())
   }
 
   /**
@@ -32,9 +37,9 @@ class Vec(val elems: Seq[Double]) {
    * @param that other vector
    * @return
    */
-  def +(that: Vec): Vec = {
+  def +(that: Vec[T])(implicit n: Numeric[T]): Vec[T] = {
     new Vec(
-      pairwise(this, that, (x, y) => x + y)
+      pairwise(this, that, (x, y) => n.plus(x, y))
     )
   }
 
@@ -43,9 +48,9 @@ class Vec(val elems: Seq[Double]) {
    * @param that other vector
    * @return
    */
-  def -(that: Vec): Vec = {
+  def -(that: Vec[T])(implicit n: Numeric[T]): Vec[T] = {
     new Vec(
-      pairwise(this, that, (x, y) => x - y)
+      pairwise(this, that, (x, y) => n.minus(x, y))
     )
   }
 
@@ -54,9 +59,9 @@ class Vec(val elems: Seq[Double]) {
    * @param c the scalar
    * @return
    */
-  def *(c: Double): Vec = {
+  def *(c: T)(implicit n: Numeric[T]): Vec[T] = {
     new Vec(
-      elems.map(c * _)
+      elems.map(n.times(c, _))
     )
   }
 
@@ -65,10 +70,10 @@ class Vec(val elems: Seq[Double]) {
    * @param that other vector
    * @return
    */
-  def dotProd(that: Vec): Double = {
+  def dotProd(that: Vec[T])(implicit n: Numeric[T]): T = {
     val seq =
       for ((x, y) <- elems zip that.elems)
-      yield x * y
+      yield n.times(x, y)
     seq.sum
   }
 
@@ -79,9 +84,9 @@ class Vec(val elems: Seq[Double]) {
    * @param f function to combine pairwise elements
    * @return the sequence of combined pairwise elements
    */
-  private def pairwise(p: Vec,
-                       q: Vec,
-                       f: (Double, Double) => Double): Seq[Double] = {
+  private def pairwise(p: Vec[T],
+                       q: Vec[T],
+                       f: (T, T) => T): Seq[T] = {
     for ((x, y) <- p.elems zip q.elems)
     yield f(x, y)
   }
